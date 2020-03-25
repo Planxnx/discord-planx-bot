@@ -1,2 +1,2 @@
 # discord-planx-bot
-discord bot playground
+Savage bot for fun
