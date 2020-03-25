@@ -1,0 +1,19 @@
+{
+  "name": "discord-planx-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thanee Charattrakool",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.0.2",
+    "ffmpeg-static": "^4.0.1",
+    "libsodium-wrappers": "^0.7.6",
+    "opusscript": "0.0.7",
+    "ytdl-core": "^2.0.1"
+  }
+}
