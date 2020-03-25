@@ -18,4 +18,4 @@ client.on('message', async (msg) => {
     }
 });
 
-client.login(auth.token);
+client.login(process.env.BOT_TOKEN || auth.token);
