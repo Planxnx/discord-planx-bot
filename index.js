@@ -13,8 +13,12 @@ client.on('message', async (msg) => {
         msg.channel.send('ไหนใครมีเหี้ยไร');
         msg.reply('มึงเหรอ');
     }
-    if (msg.member.voice.channel) {
+    
+    if (msg.member.voice.channel && !msg.author.bot) {
         const connection = await msg.member.voice.channel.join();
+        setTimeout(()=>{
+            connection.play('./sound/pen-kuy-rai.mp3')
+        }, 500)
     }
 });
 
