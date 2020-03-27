@@ -13,6 +13,7 @@ const playPenKuyRai = (msg) => {
 }
 
 module.exports = (msg) => {
+    const message = msg.content;
     if (message.includes("ควย")){
         msg.channel.send('ไหนใครมีเหี้ยไร');
         msg.reply('มึงเหรอ');
