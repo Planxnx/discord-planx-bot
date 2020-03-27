@@ -5,7 +5,8 @@ const stopBot = async (msg) => {
         const connection = await msg.member.voice.channel.join();
         setTimeout(() => {
             connection.play('./src/sound/ok.mp3')
-        }, 200)
+        }, 200);
+        msg.channel.send('หยุดแล้วครับ');
     }
 }
 
@@ -21,11 +22,17 @@ const playYoutube = async (msg, prefix) => {
     }
 }
 
+const showHelp = async (msg) => {
+    msg.channel.send('~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป');
+    msg.channel.send('~stop : สั่งให้โพรหยุดพูด'); 
+}
+
 module.exports = (msg, prefix) => {
     if (msg.content == `${prefix}stop`) {
         stopBot(msg);
     } else if (msg.content.startsWith(`${prefix}play`)) {
         playYoutube(msg, prefix);
+    } else if (msg.content == `${prefix}help`) {
+        showHelp(msg);
     }
-
 }
