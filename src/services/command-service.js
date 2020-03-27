@@ -24,13 +24,13 @@ const playYoutube = async (msg, prefix) => {
                     msg.channel.send('เล่นไม่ได้จ้า ขอผ่านน้า');
                     return;
                 }
+                if (youtubeQueue.length > 0) {
+                    msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
+                }
                 youtubeQueue.push({
                     title: info.title,
                     url: url
                 })
-                if (youtubeQueue.length) {
-                    msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
-                }
                 if(!isVoicePlaying){
                     playYouTubeQueue(msg, connection);
                 }
@@ -47,14 +47,14 @@ const showHelp = async (msg) => {
 }
 
 const playYouTubeQueue = (msg, connection) => {
-    if (youtubeQueue.length) {
+    if (youtubeQueue.length > 0) {
         isVoicePlaying = true;
         const youtubeData = youtubeQueue.shift()
         const dispatcher = connection.play(ytdl(youtubeData.url, {
             filter: 'audioonly'
         }));
+        dispatcher.setVolume(0.6);
         msg.channel.send(`กำลังจะเล่น ${youtubeData.title} นะครับ`);
-        msg.channel.send(youtubeData.url);
         dispatcher.on('finish', () => {
             playYouTubeQueue(msg, connection)
         });
