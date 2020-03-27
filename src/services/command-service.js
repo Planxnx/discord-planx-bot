@@ -13,12 +13,12 @@ const showQueue = (msg) => {
 
 const skipQueue = async (msg) => {
     if (msg.member.voice.channel) {
-        isVoicePlaying = false;
         const connection = await msg.member.voice.channel.join();
-        setTimeout(() => {
-            connection.play('./src/sound/ok.mp3')
-        }, 200);
-        msg.channel.send('หยุดแล้วครับ');
+        if(!youtubeQueue.length){
+            msg.channel.send('ไม่เหลือให้ข้ามแล้วครับ');
+            return;
+        }
+        playYouTubeQueue(msg, connection);
     }
 }
 
@@ -57,14 +57,17 @@ const playYoutube = async (msg, prefix) => {
         }else {
             playYouTubeQueue(msg, connection);
         }
+    }else {
+        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
     }
 }
 
 const showHelp = async (msg) => {
     msg.channel.send('~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ');
     msg.channel.send('~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว');
+    msg.channel.send('~skip : สั่งให้โพรข้ามรายการที่กำลังเล่น');
     msg.channel.send('~stop : สั่งให้โพรหยุดพูด');
-    msg.channel.send('~queue : ดูรายการที่อยู่ในคิว');
+    msg.channel.send('~queue : ดูรายการที่อยู่ในคิวทั้งหมด');
 }
 
 const playYouTubeQueue = (msg, connection) => {
@@ -74,7 +77,7 @@ const playYouTubeQueue = (msg, connection) => {
         const dispatcher = connection.play(ytdl(youtubeData.url, {
             filter: 'audioonly'
         }));
-        dispatcher.setVolume(0.6);
+        dispatcher.setVolume(0.2);
         msg.channel.send(`กำลังจะเล่น ${youtubeData.title} นะครับ`);
         dispatcher.on('finish', () => {
             playYouTubeQueue(msg, connection)
@@ -95,6 +98,6 @@ module.exports = (msg, prefix) => {
     }else if (msg.content == `${prefix}queue`) {
         showQueue(msg);
     }else if (msg.content == `${prefix}skip`) {
-        shwoQueue(msg);
+        skipQueue(msg);
     }
 }
