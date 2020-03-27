@@ -1,7 +1,11 @@
 const ytdl = require('ytdl-core');
 
+let isVoicePlaying = false;
+const youtubeQueue = [];
+
 const stopBot = async (msg) => {
     if (msg.member.voice.channel) {
+        isVoicePlaying = false;
         const connection = await msg.member.voice.channel.join();
         setTimeout(() => {
             connection.play('./src/sound/ok.mp3')
@@ -12,23 +16,52 @@ const stopBot = async (msg) => {
 
 const playYoutube = async (msg, prefix) => {
     if (msg.member.voice.channel) {
-        const url = msg.content.slice(prefix.length + 5);
         const connection = await msg.member.voice.channel.join();
-        ytdl.getInfo(url,(err, info)=>{
-            msg.channel.send('เดี๋ยวผมเล่นให้ครับพี่');
-            msg.channel.send(`${info.title} นะ`);
-        })
-        setTimeout(() => {
-            connection.play(ytdl(url, {
-                filter: 'audioonly'
-            }));
-        }, 200)
+        if (msg.content != prefix + 'play') {
+            const url = msg.content.slice(prefix.length + 5);
+            ytdl.getInfo(url, (err, info) => {
+                if (err) {
+                    msg.channel.send('เล่นไม่ได้จ้า ขอผ่านน้า');
+                    return;
+                }
+                youtubeQueue.push({
+                    title: info.title,
+                    url: url
+                })
+                if (youtubeQueue.length) {
+                    msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
+                }
+                if(!isVoicePlaying){
+                    playYouTubeQueue(msg, connection);
+                }
+            })
+        }else {
+            playYouTubeQueue(msg, connection);
+        }
     }
 }
 
 const showHelp = async (msg) => {
     msg.channel.send('~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป');
-    msg.channel.send('~stop : สั่งให้โพรหยุดพูด'); 
+    msg.channel.send('~stop : สั่งให้โพรหยุดพูด');
+}
+
+const playYouTubeQueue = (msg, connection) => {
+    if (youtubeQueue.length) {
+        isVoicePlaying = true;
+        const youtubeData = youtubeQueue.shift()
+        const dispatcher = connection.play(ytdl(youtubeData.url, {
+            filter: 'audioonly'
+        }));
+        msg.channel.send(`กำลังจะเล่น ${youtubeData.title} นะครับ`);
+        msg.channel.send(youtubeData.url);
+        dispatcher.on('finish', () => {
+            playYouTubeQueue(msg, connection)
+        });
+    } else {
+        isVoicePlaying = false;
+        return;
+    }
 }
 
 module.exports = (msg, prefix) => {
