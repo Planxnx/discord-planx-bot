@@ -16,5 +16,6 @@ module.exports = (msg) => {
     const message = msg.content;
     if (message.includes("ควย")){
         msg.reply('อะไรสิ๊');
+        playPenKuyRai(msg);
     }
 }
