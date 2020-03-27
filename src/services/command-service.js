@@ -1,20 +1,31 @@
 const ytdl = require('ytdl-core');
+const Discord = require('discord.js');
 
 let isVoicePlaying = false;
 const youtubeQueue = [];
 
 const showQueue = (msg) => {
-    let queue = youtubeQueue.map(element=>{
-        return "- "+element.title;
+    if (!youtubeQueue.length) {
+        const queueEmbed = new Discord.MessageEmbed()
+            .setColor('#5f4b8b')
+            .setDescription('ไม่เหลือรายการในคิวเลยค้าบ เพิ่มเพลงก่อนนะค้าบ')
+        msg.channel.send(queueEmbed);
+        return;
+    }
+    let queue = youtubeQueue.map(element => {
+        return "- " + element.title;
     })
-    msg.channel.send('รายการที่อยู่ในคิวนะค้าบ');
-    msg.channel.send(queue);
+    const queueEmbed = new Discord.MessageEmbed()
+        .setColor('#5f4b8b')
+        .setTitle('รายการที่อยู่ในคิวนะค้าบ')
+        .setDescription(queue)
+    msg.channel.send(queueEmbed);
 }
 
 const skipQueue = async (msg) => {
     if (msg.member.voice.channel) {
         const connection = await msg.member.voice.channel.join();
-        if(!youtubeQueue.length){
+        if (!youtubeQueue.length) {
             msg.channel.send('ไม่เหลือให้ข้ามแล้วครับ');
             return;
         }
@@ -50,24 +61,29 @@ const playYoutube = async (msg, prefix) => {
                     title: info.title,
                     url: url
                 })
-                if(!isVoicePlaying){
+                if (!isVoicePlaying) {
                     playYouTubeQueue(msg, connection);
                 }
             })
-        }else {
+        } else {
             playYouTubeQueue(msg, connection);
         }
-    }else {
+    } else {
         msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
     }
 }
 
 const showHelp = async (msg) => {
-    msg.channel.send('~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ');
-    msg.channel.send('~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว');
-    msg.channel.send('~skip : สั่งให้โพรข้ามรายการที่กำลังเล่น');
-    msg.channel.send('~stop : สั่งให้โพรหยุดพูด');
-    msg.channel.send('~queue : ดูรายการที่อยู่ในคิวทั้งหมด');
+    const helpEmbed = new Discord.MessageEmbed()
+        .setColor('#5f4b8b')
+        .setTitle('คำสั่งสำหรับน้องโพร')
+        .setDescription(`~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ \n
+        ~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
+        ~skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
+        ~stop : สั่งให้โพรหยุดพูด \n
+        ~queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
+        `)
+    msg.channel.send(helpEmbed);
 }
 
 const playYouTubeQueue = (msg, connection) => {
@@ -89,15 +105,20 @@ const playYouTubeQueue = (msg, connection) => {
 }
 
 module.exports = (msg, prefix) => {
-    if (msg.content == `${prefix}stop` || msg.content == `${prefix}pause` ) {
+    if (msg.content == `${prefix}stop` || msg.content == `${prefix}pause`) {
         stopBot(msg);
     } else if (msg.content.startsWith(`${prefix}play`)) {
         playYoutube(msg, prefix);
     } else if (msg.content == `${prefix}help`) {
         showHelp(msg);
-    }else if (msg.content == `${prefix}queue`) {
+    } else if (msg.content == `${prefix}queue`) {
         showQueue(msg);
-    }else if (msg.content == `${prefix}skip`) {
+    } else if (msg.content == `${prefix}skip`) {
         skipQueue(msg);
+    } else {
+        const messageEmbed = new Discord.MessageEmbed()
+            .setColor('#5f4b8b')
+            .setDescription('~help เพื่อดูคำสั่งทั้งหมดนะค้าบ')
+        msg.channel.send(messageEmbed);
     }
 }
