@@ -3,7 +3,7 @@ const playPenKuyRai = (msg) => {
         msg.member.voice.channel.join()
             .then(connection => {
                 setTimeout(()=>{
-                    connection.play('./sound/pen-kuy-rai.mp3')
+                    connection.play('./src/sound/pen-kuy-rai.mp3')                    
                 }, 200)
             })
             .catch(err => {
@@ -15,7 +15,6 @@ const playPenKuyRai = (msg) => {
 module.exports = (msg) => {
     const message = msg.content;
     if (message.includes("ควย")){
-        msg.channel.send('ไหนใครมีเหี้ยไร');
-        msg.reply('มึงเหรอ');
+        msg.reply('อะไรสิ๊');
     }
 }
