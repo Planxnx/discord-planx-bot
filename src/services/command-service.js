@@ -12,10 +12,14 @@ const stopBot = async (msg) => {
 
 const playYoutube = async (msg, prefix) => {
     if (msg.member.voice.channel) {
+        const url = msg.content.slice(prefix.length + 5);
         const connection = await msg.member.voice.channel.join();
-        msg.channel.send('เดี๋ยวผมเล่นให้เลยครับพี่');
+        ytdl.getInfo(url,(err, info)=>{
+            msg.channel.send('เดี๋ยวผมเล่นให้ครับพี่');
+            msg.channel.send(`${info.title} นะ`);
+        })
         setTimeout(() => {
-            connection.play(ytdl(msg.content.slice(prefix.length + 5), {
+            connection.play(ytdl(url, {
                 filter: 'audioonly'
             }));
         }, 200)
