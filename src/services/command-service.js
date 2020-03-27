@@ -6,10 +6,7 @@ const youtubeQueue = [];
 
 const showQueue = (msg) => {
     if (!youtubeQueue.length) {
-        const queueEmbed = new Discord.MessageEmbed()
-            .setColor('#5f4b8b')
-            .setDescription('ไม่เหลือรายการในคิวเลยค้าบ เพิ่มเพลงก่อนนะค้าบ')
-        msg.channel.send(queueEmbed);
+        msg.channel.send('ไม่เหลือรายการในคิวเลยค้าบ เพิ่มเพลงก่อนนะค้าบ');
         return;
     }
     let queue = youtubeQueue.map(element => {
@@ -94,7 +91,10 @@ const playYouTubeQueue = (msg, connection) => {
             filter: 'audioonly'
         }));
         dispatcher.setVolume(0.2);
-        msg.channel.send(`กำลังจะเล่น ${youtubeData.title} นะครับ`);
+        const messageEmbed = new Discord.MessageEmbed()
+            .setColor('#5f4b8b')
+            .setDescription(`กำลังจะเล่น ${youtubeData.title} นะครับ`)
+        msg.channel.send(messageEmbed);
         dispatcher.on('finish', () => {
             playYouTubeQueue(msg, connection)
         });
