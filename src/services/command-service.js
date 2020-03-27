@@ -3,12 +3,23 @@ const ytdl = require('ytdl-core');
 let isVoicePlaying = false;
 const youtubeQueue = [];
 
-const shwoQueue = (msg) => {
+const showQueue = (msg) => {
     let queue = youtubeQueue.map(element=>{
         return "- "+element.title;
     })
     msg.channel.send('รายการที่อยู่ในคิวนะค้าบ');
     msg.channel.send(queue);
+}
+
+const skipQueue = async (msg) => {
+    if (msg.member.voice.channel) {
+        isVoicePlaying = false;
+        const connection = await msg.member.voice.channel.join();
+        setTimeout(() => {
+            connection.play('./src/sound/ok.mp3')
+        }, 200);
+        msg.channel.send('หยุดแล้วครับ');
+    }
 }
 
 const stopBot = async (msg) => {
@@ -50,7 +61,7 @@ const playYoutube = async (msg, prefix) => {
 }
 
 const showHelp = async (msg) => {
-    msg.channel.send('~play : ให้โพรเล่นเพลงที่อยู่ในคิว');
+    msg.channel.send('~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ');
     msg.channel.send('~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว');
     msg.channel.send('~stop : สั่งให้โพรหยุดพูด');
     msg.channel.send('~queue : ดูรายการที่อยู่ในคิว');
@@ -82,6 +93,8 @@ module.exports = (msg, prefix) => {
     } else if (msg.content == `${prefix}help`) {
         showHelp(msg);
     }else if (msg.content == `${prefix}queue`) {
+        showQueue(msg);
+    }else if (msg.content == `${prefix}skip`) {
         shwoQueue(msg);
     }
 }
