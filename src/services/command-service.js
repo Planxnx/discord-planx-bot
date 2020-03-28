@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const botService = require('./bot-service');
 const messageContext = require('../../message-context.json')
-let soundVolume = process.env.BOT_PREFIX || 0.5;
+let soundVolume = process.env.BOT_VOLUME || 0.5;
 let isVoicePlaying = false;
 const youtubeQueue = [];
 
