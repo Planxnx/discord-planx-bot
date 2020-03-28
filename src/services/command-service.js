@@ -55,7 +55,8 @@ const playYoutube = async (msg, prefix) => {
             if (!ytdl.validateURL(url)) {
                 try {
                     msg.channel.send(messageContext.youtubeSearching);
-                    url = await botService.searchYoutube(url);
+                    url = await botService.searchYoutube(msg.content.slice(prefix.length + 5));
+                    msg.channel.send(`เจอ ${url} นะครับ`);
                 } catch (error) {
                     console.log(`ERROR : ${error}`);
                 }
