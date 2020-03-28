@@ -1,5 +1,6 @@
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
+const botService = require('./bot-service');
 
 let isVoicePlaying = false;
 const youtubeQueue = [];
@@ -27,6 +28,8 @@ const skipQueue = async (msg) => {
             return;
         }
         playYouTubeQueue(msg, connection);
+    }else {
+        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
     }
 }
 
@@ -38,6 +41,8 @@ const stopBot = async (msg) => {
             connection.play('./src/sound/ok.mp3')
         }, 200);
         msg.channel.send('หยุดแล้วครับ');
+    } else {
+        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
     }
 }
 
@@ -45,7 +50,15 @@ const playYoutube = async (msg, prefix) => {
     if (msg.member.voice.channel) {
         const connection = await msg.member.voice.channel.join();
         if (msg.content != prefix + 'play') {
-            const url = msg.content.slice(prefix.length + 5);
+            let url = msg.content.slice(prefix.length + 5);
+            if(!ytdl.validateURL(url)){
+                try {
+                    msg.channel.send('ขอไปลองค้นหาแปปนะค้าบ');
+                    url = await botService.searchYoutube(url);
+                } catch (error) {
+                    console.log(`ERROR : ${error}`);
+                }
+            }
             ytdl.getInfo(url, (err, info) => {
                 if (err) {
                     msg.channel.send('เล่นไม่ได้จ้า ขอผ่านน้า');
@@ -75,7 +88,7 @@ const showHelp = async (msg) => {
         .setColor('#5f4b8b')
         .setTitle('คำสั่งสำหรับน้องโพร')
         .setDescription(`~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ \n
-        ~play [Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
+        ~play [ชื่อคลิปในยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
         ~skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
         ~stop : สั่งให้โพรหยุดพูด \n
         ~queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
