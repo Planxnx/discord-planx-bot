@@ -2,6 +2,7 @@ const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const botService = require('./bot-service');
 
+let soundVolume = process.env.BOT_PREFIX || 0.5;
 let isVoicePlaying = false;
 const youtubeQueue = [];
 
@@ -28,7 +29,7 @@ const skipQueue = async (msg) => {
             return;
         }
         playYouTubeQueue(msg, connection);
-    }else {
+    } else {
         msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
     }
 }
@@ -51,7 +52,7 @@ const playYoutube = async (msg, prefix) => {
         const connection = await msg.member.voice.channel.join();
         if (msg.content != prefix + 'play') {
             let url = msg.content.slice(prefix.length + 5);
-            if(!ytdl.validateURL(url)){
+            if (!ytdl.validateURL(url)) {
                 try {
                     msg.channel.send('ขอไปลองค้นหาแปปนะค้าบ');
                     url = await botService.searchYoutube(url);
@@ -103,7 +104,7 @@ const playYouTubeQueue = (msg, connection) => {
         const dispatcher = connection.play(ytdl(youtubeData.url, {
             filter: 'audioonly'
         }));
-        dispatcher.setVolume(0.2);
+        dispatcher.setVolume(soundVolume);
         const messageEmbed = new Discord.MessageEmbed()
             .setColor('#5f4b8b')
             .setDescription(`กำลังจะเล่น ${youtubeData.title} นะครับ`)
@@ -140,5 +141,5 @@ module.exports = (msg, prefix) => {
     } catch (error) {
         console.log(`ERROR in idiot trycatch command-services : ${error}`)
     }
-    
+
 }
