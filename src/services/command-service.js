@@ -100,6 +100,7 @@ const playYouTubeQueue = (msg, connection) => {
         });
     } else {
         isVoicePlaying = false;
+        msg.channel.send('ไม่เหลือรายการในคิวแล้วค้าบ เพิ่มเพลงด้วยนะค้าบ');
         return;
     }
 }
