@@ -84,15 +84,15 @@ const playYoutube = async (msg, prefix) => {
     }
 }
 
-const showHelp = async (msg) => {
+const showHelp = async (msg,prefix) => {
     const helpEmbed = new Discord.MessageEmbed()
         .setColor('#5f4b8b')
         .setTitle('คำสั่งสำหรับน้องโพร')
-        .setDescription(`~play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ \n
-        ~play [ชื่อคลิปในยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
-        ~skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
-        ~stop : สั่งให้โพรหยุดพูด \n
-        ~queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
+        .setDescription(`${prefix}play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ \n
+        ${prefix}play [ชื่อคลิปในยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
+        ${prefix}skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
+        ${prefix}stop : สั่งให้โพรหยุดพูด \n
+        ${prefix}queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
         `)
     msg.channel.send(helpEmbed);
 }
@@ -127,7 +127,7 @@ module.exports = (msg, prefix) => {
         } else if (msg.content.startsWith(`${prefix}play`)) {
             playYoutube(msg, prefix);
         } else if (msg.content == `${prefix}help`) {
-            showHelp(msg);
+            showHelp(msg,prefix);
         } else if (msg.content == `${prefix}queue`) {
             showQueue(msg);
         } else if (msg.content == `${prefix}skip`) {
@@ -135,7 +135,7 @@ module.exports = (msg, prefix) => {
         } else {
             const messageEmbed = new Discord.MessageEmbed()
                 .setColor('#5f4b8b')
-                .setDescription('~help เพื่อดูคำสั่งทั้งหมดนะค้าบ')
+                .setDescription(`${prefix}help เพื่อดูคำสั่งทั้งหมดนะค้าบ`)
             msg.channel.send(messageEmbed);
         }
     } catch (error) {
