@@ -1,14 +1,14 @@
 const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const botService = require('./bot-service');
-
+const messageContext = require('../../message-context.json')
 let soundVolume = process.env.BOT_PREFIX || 0.5;
 let isVoicePlaying = false;
 const youtubeQueue = [];
 
 const showQueue = (msg) => {
     if (!youtubeQueue.length) {
-        msg.channel.send('ไม่เหลือรายการในคิวเลยค้าบ เพิ่มเพลงก่อนนะค้าบ');
+        msg.channel.send(messageContext.emptyQueue);
         return;
     }
     let queue = youtubeQueue.map(element => {
@@ -25,12 +25,12 @@ const skipQueue = async (msg) => {
     if (msg.member.voice.channel) {
         const connection = await msg.member.voice.channel.join();
         if (!youtubeQueue.length) {
-            msg.channel.send('ไม่เหลือให้ข้ามแล้วครับ');
+            msg.channel.send(messageContext.emptyQueue);
             return;
         }
         playYouTubeQueue(msg, connection);
     } else {
-        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
+        msg.reply(messageContext.needUserJoin);
     }
 }
 
@@ -41,9 +41,9 @@ const stopBot = async (msg) => {
         setTimeout(() => {
             connection.play('./src/sound/ok.mp3')
         }, 200);
-        msg.channel.send('หยุดแล้วครับ');
+        msg.channel.send(messageContext.botStop);
     } else {
-        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
+        msg.reply(messageContext.needUserJoin);
     }
 }
 
@@ -54,7 +54,7 @@ const playYoutube = async (msg, prefix) => {
             let url = msg.content.slice(prefix.length + 5);
             if (!ytdl.validateURL(url)) {
                 try {
-                    msg.channel.send('ขอไปลองค้นหาแปปนะค้าบ');
+                    msg.channel.send(messageContext.youtubeSearching);
                     url = await botService.searchYoutube(url);
                 } catch (error) {
                     console.log(`ERROR : ${error}`);
@@ -62,7 +62,7 @@ const playYoutube = async (msg, prefix) => {
             }
             ytdl.getInfo(url, (err, info) => {
                 if (err) {
-                    msg.channel.send('เล่นไม่ได้จ้า ขอผ่านน้า');
+                    msg.channel.send(messageContext.youtubeErrorSkip);
                     return;
                 }
                 if (youtubeQueue.length > 0) {
@@ -80,7 +80,7 @@ const playYoutube = async (msg, prefix) => {
             playYouTubeQueue(msg, connection);
         }
     } else {
-        msg.reply('ต้องเข้าไปอยู่ในห้องก่อนค้าบ');
+        msg.reply(messageContext.needUserJoin);
     }
 }
 
@@ -114,7 +114,7 @@ const playYouTubeQueue = (msg, connection) => {
         });
     } else {
         isVoicePlaying = false;
-        msg.channel.send('ไม่เหลือรายการในคิวแล้วค้าบ เพิ่มเพลงด้วยนะค้าบ');
+        msg.channel.send(messageContext.emptyQueue);
         return;
     }
 }
