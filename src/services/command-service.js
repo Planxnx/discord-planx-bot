@@ -119,20 +119,26 @@ const playYouTubeQueue = (msg, connection) => {
 }
 
 module.exports = (msg, prefix) => {
-    if (msg.content == `${prefix}stop` || msg.content == `${prefix}pause`) {
-        stopBot(msg);
-    } else if (msg.content.startsWith(`${prefix}play`)) {
-        playYoutube(msg, prefix);
-    } else if (msg.content == `${prefix}help`) {
-        showHelp(msg);
-    } else if (msg.content == `${prefix}queue`) {
-        showQueue(msg);
-    } else if (msg.content == `${prefix}skip`) {
-        skipQueue(msg);
-    } else {
-        const messageEmbed = new Discord.MessageEmbed()
-            .setColor('#5f4b8b')
-            .setDescription('~help เพื่อดูคำสั่งทั้งหมดนะค้าบ')
-        msg.channel.send(messageEmbed);
+    //todo : remove idiot trycatch
+    try {
+        if (msg.content == `${prefix}stop` || msg.content == `${prefix}pause`) {
+            stopBot(msg);
+        } else if (msg.content.startsWith(`${prefix}play`)) {
+            playYoutube(msg, prefix);
+        } else if (msg.content == `${prefix}help`) {
+            showHelp(msg);
+        } else if (msg.content == `${prefix}queue`) {
+            showQueue(msg);
+        } else if (msg.content == `${prefix}skip`) {
+            skipQueue(msg);
+        } else {
+            const messageEmbed = new Discord.MessageEmbed()
+                .setColor('#5f4b8b')
+                .setDescription('~help เพื่อดูคำสั่งทั้งหมดนะค้าบ')
+            msg.channel.send(messageEmbed);
+        }
+    } catch (error) {
+        console.log(`ERROR in idiot trycatch command-services : ${error}`)
     }
+    
 }
