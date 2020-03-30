@@ -121,7 +121,7 @@ const playYouTubeQueue = (msg, connection) => {
     }
 }
 
-const addQueue = (msg, prefix) => {
+const addQueue = async (msg, prefix) => {
     if (msg.content == prefix + 'add') {
         const addQueueEmbed = new Discord.MessageEmbed()
         .setColor('#5f4b8b')
@@ -130,31 +130,27 @@ const addQueue = (msg, prefix) => {
         msg.channel.send(addQueueEmbed);
     } else {
         let url = msg.content.slice(prefix.length + 4);
-        addURLQueue(msg,prefix,url);
-    }
-}
-const addURLQueue = async (msg,prefix,url) => {
-    let youtubeURL = url;
-    if (!ytdl.validateURL(url)) {
-        try {
-            msg.channel.send(messageContext.youtubeSearching);
-            youtubeURL = await botService.searchYoutube(msg.content.slice(prefix.length + 4));
-            msg.channel.send(`เจอ ${youtubeURL} นะครับ`);
-        } catch (error) {
-            console.log(`ERROR in addURLQueue : ${error}`);
+        if (!ytdl.validateURL(url)) {
+            try {
+                msg.channel.send(messageContext.youtubeSearching);
+                url = await botService.searchYoutube(msg.content.slice(prefix.length + 4));
+                msg.channel.send(`เจอ ${url} นะครับ`);
+            } catch (error) {
+                console.log(`ERROR in addURLQueue : ${error}`);
+            }
         }
-    }
-    ytdl.getInfo(youtubeURL, (err, info) => {
-        if (err) {
-            msg.channel.send(messageContext.youtubeErrorSkip);
-            return;
-        }
-        msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
-        youtubeQueue.push({
-            title: info.title,
-            url: youtubeURL
+        ytdl.getInfo(url, (err, info) => {
+            if (err) {
+                msg.channel.send(messageContext.youtubeErrorSkip);
+                return;
+            }
+            msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
+            youtubeQueue.push({
+                title: info.title,
+                url: url
+            })
         })
-    })
+    }
 }
 
 module.exports = (msg, prefix) => {
