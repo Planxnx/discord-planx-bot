@@ -85,12 +85,13 @@ const playYoutube = async (msg, prefix) => {
     }
 }
 
-const showHelp = async (msg,prefix) => {
+const showHelp = async (msg, prefix) => {
     const helpEmbed = new Discord.MessageEmbed()
         .setColor('#5f4b8b')
-        .setTitle('คำสั่งสำหรับน้องโพร')
-        .setDescription(`${prefix}play : ให้โพรเล่นเพลงที่อยู่ในคิวต่อ \n
-        ${prefix}play [ชื่อคลิปในยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป , เพิ่มลงในคิว \n
+        .setTitle('คำสั่งสำหรับน้องโพรนะครับณร๊องๆ')
+        .setDescription(`${prefix}play : ให้โพรเริ่มเล่นเพลงที่อยู่ในคิวต่อ \n
+        ${prefix}play [ชื่อคลิปยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป ,เพิ่มลงในคิวและเล่น \n
+        ${prefix}add [ชื่อคลิปยูทูป / Youtube URL] : เพิ่มเพลงลงในคิว \n
         ${prefix}skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
         ${prefix}stop : สั่งให้โพรหยุดพูด \n
         ${prefix}queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
@@ -120,6 +121,38 @@ const playYouTubeQueue = (msg, connection) => {
     }
 }
 
+const addQueue = async (msg, prefix) => {
+    if (msg.content == prefix + 'add') {
+        const addQueueEmbed = new Discord.MessageEmbed()
+        .setColor('#5f4b8b')
+        .setTitle('คำสั่งไม่ครบนะครับ')
+        .setDescription(`${prefix}add [ชื่อคลิปในยูทูป / Youtube URL] `)
+        msg.channel.send(addQueueEmbed);
+    } else {
+        let url = msg.content.slice(prefix.length + 4);
+        if (!ytdl.validateURL(url)) {
+            try {
+                msg.channel.send(messageContext.youtubeSearching);
+                url = await botService.searchYoutube(msg.content.slice(prefix.length + 4));
+                msg.channel.send(`เจอ ${url} นะครับ`);
+            } catch (error) {
+                console.log(`ERROR in addURLQueue : ${error}`);
+            }
+        }
+        ytdl.getInfo(url, (err, info) => {
+            if (err) {
+                msg.channel.send(messageContext.youtubeErrorSkip);
+                return;
+            }
+            msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
+            youtubeQueue.push({
+                title: info.title,
+                url: url
+            })
+        })
+    }
+}
+
 module.exports = (msg, prefix) => {
     //todo : remove idiot trycatch
     try {
@@ -127,8 +160,10 @@ module.exports = (msg, prefix) => {
             stopBot(msg);
         } else if (msg.content.startsWith(`${prefix}play`)) {
             playYoutube(msg, prefix);
+        } else if (msg.content.startsWith(`${prefix}add`)) {
+            addQueue(msg, prefix);
         } else if (msg.content == `${prefix}help`) {
-            showHelp(msg,prefix);
+            showHelp(msg, prefix);
         } else if (msg.content == `${prefix}queue`) {
             showQueue(msg);
         } else if (msg.content == `${prefix}skip`) {
