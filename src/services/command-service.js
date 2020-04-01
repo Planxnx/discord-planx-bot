@@ -67,7 +67,7 @@ const playYoutube = async (msg, prefix) => {
                     msg.channel.send(messageContext.youtubeErrorSkip);
                     return;
                 }
-                if (youtubeQueue.length > 0) {
+                if (isVoicePlaying) {
                     msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
                 }
                 youtubeQueue.push({
