@@ -2,6 +2,7 @@ const ytdl = require('ytdl-core');
 const Discord = require('discord.js');
 const botService = require('./bot-service');
 const messageContext = require('../../message-context.json')
+
 let soundVolume = process.env.BOT_VOLUME || 0.5;
 let isVoicePlaying = false;
 const youtubeQueue = [];
@@ -58,7 +59,7 @@ const playYoutube = async (msg, prefix) => {
                     url = await botService.searchYoutube(msg.content.slice(prefix.length + 5));
                     msg.channel.send(`เจอ ${url} นะครับ`);
                 } catch (error) {
-                    console.log(`ERROR : ${error}`);
+                    console.log(`ERROR in play : ${msg.content.slice(prefix.length + 5)}, \n ${error}`);
                 }
             }
             ytdl.getInfo(url, (err, info) => {
@@ -136,7 +137,7 @@ const addQueue = async (msg, prefix) => {
                 url = await botService.searchYoutube(msg.content.slice(prefix.length + 4));
                 msg.channel.send(`เจอ ${url} นะครับ`);
             } catch (error) {
-                console.log(`ERROR in addURLQueue : ${error}`);
+                console.log(`ERROR in addQueue : ${msg.content.slice(prefix.length)} \n ${error}`);
             }
         }
         ytdl.getInfo(url, (err, info) => {
@@ -175,7 +176,7 @@ module.exports = (msg, prefix) => {
             msg.channel.send(messageEmbed);
         }
     } catch (error) {
-        console.log(`ERROR in idiot trycatch command-services : ${error}`)
+        console.log(`ERROR in idiot trycatch command-services : msg.content = ${msg.content}  \n ${error}`)
     }
 
 }
