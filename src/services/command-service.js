@@ -5,7 +5,7 @@ const messageContext = require('../../message-context.json')
 
 let soundVolume = process.env.BOT_VOLUME || 0.5;
 let isVoicePlaying = false;
-const youtubeQueue = [];
+let youtubeQueue = [];
 
 const showQueue = (msg) => {
     if (!youtubeQueue.length) {
@@ -67,7 +67,7 @@ const playYoutube = async (msg, prefix) => {
                     msg.channel.send(messageContext.youtubeErrorSkip);
                     return;
                 }
-                if (youtubeQueue.length > 0) {
+                if (isVoicePlaying) {
                     msg.channel.send(`เพิ่ม ${info.title} ลงในคิวนะครับ`);
                 }
                 youtubeQueue.push({
@@ -154,29 +154,17 @@ const addQueue = async (msg, prefix) => {
     }
 }
 
-module.exports = (msg, prefix) => {
-    //todo : remove idiot trycatch
-    try {
-        if (msg.content == `${prefix}stop` || msg.content == `${prefix}pause`) {
-            stopBot(msg);
-        } else if (msg.content.startsWith(`${prefix}play`)) {
-            playYoutube(msg, prefix);
-        } else if (msg.content.startsWith(`${prefix}add`)) {
-            addQueue(msg, prefix);
-        } else if (msg.content == `${prefix}help`) {
-            showHelp(msg, prefix);
-        } else if (msg.content == `${prefix}queue`) {
-            showQueue(msg);
-        } else if (msg.content == `${prefix}skip`) {
-            skipQueue(msg);
-        } else {
-            const messageEmbed = new Discord.MessageEmbed()
-                .setColor('#5f4b8b')
-                .setDescription(`${prefix}help เพื่อดูคำสั่งทั้งหมดนะค้าบ`)
-            msg.channel.send(messageEmbed);
-        }
-    } catch (error) {
-        console.log(`ERROR in idiot trycatch command-services : msg.content = ${msg.content}  \n ${error}`)
-    }
+const removeAllQueue = (msg) => {
+    youtubeQueue = [];
+    msg.reply(messageContext.removeQueue);
+}
 
+module.exports =  {
+    addQueue,
+    playYoutube,
+    showHelp,
+    showQueue,
+    stopBot,
+    skipQueue,
+    removeAllQueue
 }
