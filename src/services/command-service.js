@@ -93,6 +93,7 @@ const showHelp = async (msg, prefix) => {
         .setDescription(`${prefix}play : ให้โพรเริ่มเล่นเพลงที่อยู่ในคิวต่อ \n
         ${prefix}play [ชื่อคลิปยูทูป / Youtube URL] : ให้โพรเล่นเพลงจากยูทูป ,เพิ่มลงในคิวและเล่น \n
         ${prefix}add [ชื่อคลิปยูทูป / Youtube URL] : เพิ่มเพลงลงในคิว \n
+        ${prefix}removeall : ลบเพลงในคิวทั้งหมด \n
         ${prefix}skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
         ${prefix}stop : สั่งให้โพรหยุดพูด \n
         ${prefix}queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
