@@ -16,6 +16,8 @@ module.exports = (msg, prefix) => {
             commandService.showQueue(msg);
         } else if (msg.content == `${prefix}skip`) {
             commandService.skipQueue(msg);
+        } else if (msg.content == `${prefix}removeall`) {
+            commandService.removeAllQueue(msg);
         } else {
             const messageEmbed = new Discord.MessageEmbed()
                 .setColor('#5f4b8b')

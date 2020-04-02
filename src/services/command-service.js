@@ -5,7 +5,7 @@ const messageContext = require('../../message-context.json')
 
 let soundVolume = process.env.BOT_VOLUME || 0.5;
 let isVoicePlaying = false;
-const youtubeQueue = [];
+let youtubeQueue = [];
 
 const showQueue = (msg) => {
     if (!youtubeQueue.length) {
@@ -154,11 +154,17 @@ const addQueue = async (msg, prefix) => {
     }
 }
 
+const removeAllQueue = (msg) => {
+    youtubeQueue = [];
+    msg.reply(messageContext.removeQueue);
+}
+
 module.exports =  {
     addQueue,
     playYoutube,
     showHelp,
     showQueue,
     stopBot,
-    skipQueue
+    skipQueue,
+    removeAllQueue
 }

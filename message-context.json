@@ -3,5 +3,6 @@
     "needUserJoin": "ต้องเข้าไปอยู่ในห้องก่อนค้าบ",
     "botStop": "หยุดแล้วครับ",
     "youtubeSearching": "ขอไปลองค้นหาแปปนะค้าบ",
-    "youtubeErrorSkip": "เล่นไม่ได้จ้า ขอผ่านน้า"
+    "youtubeErrorSkip": "เล่นไม่ได้จ้า ขอผ่านน้า",
+    "removeQueue": "ลบให้แล้วค้าบ"
 }
