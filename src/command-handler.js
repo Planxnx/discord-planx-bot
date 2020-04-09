@@ -18,6 +18,10 @@ module.exports = (msg, prefix) => {
             commandService.skipQueue(msg);
         } else if (msg.content == `${prefix}removeall`) {
             commandService.removeAllQueue(msg);
+        } else if (msg.content == `${prefix}mute`) {
+            commandService.muteBot(msg);
+        } else if (msg.content == `${prefix}deaf`) {
+            commandService.deafBot(msg);
         } else {
             const messageEmbed = new Discord.MessageEmbed()
                 .setColor('#5f4b8b')

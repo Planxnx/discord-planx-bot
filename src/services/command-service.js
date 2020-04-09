@@ -97,6 +97,7 @@ const showHelp = async (msg, prefix) => {
         ${prefix}skip : สั่งให้โพรข้ามรายการที่กำลังเล่น \n
         ${prefix}stop : สั่งให้โพรหยุดพูด \n
         ${prefix}queue : ดูรายการที่อยู่ในคิวทั้งหมด \n
+        ${prefix}mute,deaf : mute หรือ deafen บอท
         `)
     msg.channel.send(helpEmbed);
 }
@@ -160,6 +161,22 @@ const removeAllQueue = (msg) => {
     msg.reply(messageContext.removeQueue);
 }
 
+const muteBot = async (msg) => {
+    if (msg.member.voice.channel) {
+        const connection = await msg.member.voice.channel.join();
+        const botVoiceState = connection.voice;
+        await botVoiceState.setSelfMute(!botVoiceState.selfMute);
+    }
+}
+
+const deafBot =async (msg) => {
+    if (msg.member.voice.channel) {
+        const connection = await msg.member.voice.channel.join();
+        const botVoiceState = connection.voice;
+        await botVoiceState.setSelfDeaf(!botVoiceState.selfDeaf);
+    }
+}
+
 module.exports =  {
     addQueue,
     playYoutube,
@@ -167,5 +184,7 @@ module.exports =  {
     showQueue,
     stopBot,
     skipQueue,
-    removeAllQueue
+    removeAllQueue,
+    muteBot,
+    deafBot
 }
